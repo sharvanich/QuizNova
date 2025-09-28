@@ -11,22 +11,6 @@ export default defineConfig({
     }),
   ],
   build: {
-    outDir: 'dist',
-  },
-  server: {
-    proxy: {
-      '/generate-quiz': {
-        target: '/api',
-        changeOrigin: true,
-      },
-      '/validate-answer': {
-        target: '/api',
-        changeOrigin: true,
-      },
-      '/health': {
-        target: '/api',
-        changeOrigin: true,
-      },
-    },
-  },
+    outDir: 'dist'
+  }
 })
