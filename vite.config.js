@@ -13,21 +13,18 @@ export default defineConfig({
   build: {
     outDir: 'dist',
   },
-  define: {
-    'import.meta.env.VITE_API_BASE_URL': JSON.stringify(import.meta.env.VITE_API_BASE_URL || ''),
-  },
   server: {
     proxy: {
       '/generate-quiz': {
-        target: 'http://localhost:5000',
+        target: '/api',
         changeOrigin: true,
       },
       '/validate-answer': {
-        target: 'http://localhost:5000',
+        target: '/api',
         changeOrigin: true,
       },
       '/health': {
-        target: 'http://localhost:5000',
+        target: '/api',
         changeOrigin: true,
       },
     },
