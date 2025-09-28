@@ -4,12 +4,39 @@
     {
       "src": "backend.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/generate-quiz",
       "dest": "backend.py"
+    },
+    {
+      "src": "/validate-answer",
+      "dest": "backend.py"
+    },
+    {
+      "src": "/health",
+      "dest": "backend.py"
+    },
+    {
+      "src": "^/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "^/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/.*",
+      "dest": "/index.html"
     }
   ]
 }

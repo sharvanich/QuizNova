@@ -10,4 +10,23 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    outDir: 'dist',
+  },
+  server: {
+    proxy: {
+      '/generate-quiz': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/validate-answer': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/health': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+    },
+  },
 })
