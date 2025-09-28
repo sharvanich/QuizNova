@@ -203,6 +203,9 @@ def validate_answer():
         print(f"Error in validate_answer: {e}")
         return jsonify({"error": "Failed to validate answer"}), 500
 
+# Initialize the quiz generator early
+quiz_gen.initialize_groq()
+
 if __name__ == '__main__':
     import os
     
@@ -225,5 +228,5 @@ if __name__ == '__main__':
         port=port
     )
 
-# This is required for Vercel deployment
+# For Vercel serverless deployment
 app = app
