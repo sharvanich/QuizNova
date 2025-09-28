@@ -28,8 +28,9 @@ class GroqQuizGenerator:
         try:
             # Get API key from environment
             api_key = os.getenv('GROQ_API_KEY')
-            if not api_key:
-                print("❌ GROQ_API_KEY not found in environment variables")
+            if not api_key or api_key == 'your_groq_api_key_here':
+                error_msg = "❌ GROQ_API_KEY not found or not properly configured"
+                print(error_msg)
                 print("💡 Get your free API key from: https://console.groq.com/keys")
                 return False
             

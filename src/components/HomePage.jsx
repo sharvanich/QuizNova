@@ -146,7 +146,7 @@ function HomePage({ onCategorySelect }) {
 
       <div className="logo-section">
         <div className="logo-container">
-          <img src="/logo.png" alt="Logo" className="homepage-logo" />
+          <img src="/public/logo.png" alt="Logo" className="homepage-logo" />
         </div>
       </div>
 
