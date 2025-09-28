@@ -28,9 +28,8 @@ class GroqQuizGenerator:
         try:
             # Get API key from environment
             api_key = os.getenv('GROQ_API_KEY')
-            if not api_key or api_key == 'your_groq_api_key_here':
-                error_msg = "❌ GROQ_API_KEY not found or not properly configured"
-                print(error_msg)
+            if not api_key:
+                print("❌ GROQ_API_KEY not found in environment variables")
                 print("💡 Get your free API key from: https://console.groq.com/keys")
                 return False
             
@@ -203,9 +202,6 @@ def validate_answer():
         print(f"Error in validate_answer: {e}")
         return jsonify({"error": "Failed to validate answer"}), 500
 
-# Initialize the quiz generator early
-quiz_gen.initialize_groq()
-
 if __name__ == '__main__':
     import os
     
@@ -227,6 +223,3 @@ if __name__ == '__main__':
         host='0.0.0.0', 
         port=port
     )
-
-# For Vercel serverless deployment
-app = app
