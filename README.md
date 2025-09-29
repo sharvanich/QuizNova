@@ -1,7 +1,3 @@
-Here’s a polished and nicely structured version of your README.md for **QuizNova**. I’ve improved clarity, formatting, and readability while keeping it concise and professional:
-
----
-
 # QuizNova
 
 **QuizNova** is an AI-powered web platform that dynamically generates quiz questions and answers. Unlike traditional quiz websites with fixed questions, QuizNova creates unique, personalized quizzes based on user-selected topics, making learning interactive, engaging, and tailored to individual needs.
@@ -104,9 +100,3 @@ This workflow provides a structured and user-friendly quiz-taking experience fro
 * **Backend**: [https://your-backend.onrender.com](https://your-backend.onrender.com)
 
 ---
-
-This version is **clean, structured, and visually easy to follow**.
-
-If you want, I can also **add badges, GIF preview of the app, and a “How it looks” screenshot section** to make it look even more professional for GitHub.
-
-Do you want me to do that next?
