@@ -6,40 +6,37 @@ import os
 import sys
 from typing import List, Dict, Any
 
-# Load environment variables from .env file
 try:
     from dotenv import load_dotenv
     load_dotenv()
 except ImportError:
-    # dotenv not installed, that's okay for production
-    pass
+    print("Erroe!!")
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)  
 
 class GroqQuizGenerator:
     def __init__(self):
         self.client = None
-        self.model_name = "llama-3.1-8b-instant"  # Fast Groq model (updated)
+        self.model_name = "llama-3.1-8b-instant" 
         self.initialize_groq()
     
     def initialize_groq(self):
         """Initialize Groq client."""
         try:
-            # Get API key from environment
             api_key = os.getenv('GROQ_API_KEY')
             if not api_key:
-                print("❌ GROQ_API_KEY not found in environment variables")
-                print("💡 Get your free API key from: https://console.groq.com/keys")
+                print("GROQ_API_KEY not found in environment variables")
+                print("Get your free API key from: https://console.groq.com/keys")
                 return False
             
             self.client = Groq(api_key=api_key)
-            print("✅ Groq client initialized successfully")
-            print(f"📄 Using model: {self.model_name}")
+            print("Groq client initialized successfully")
+            print(f"Using model: {self.model_name}")
             return True
             
         except Exception as e:
-            print(f"❌ Error initializing Groq client: {e}")
+            print(f"Error initializing Groq client: {e}")
             return False
 
     def generate_quiz_question(self, topic: str, difficulty: str) -> Dict[str, Any]:
@@ -75,7 +72,6 @@ Requirements:
             raw_content = response.choices[0].message.content
             quiz_data = json.loads(raw_content)
 
-            # Validate and normalize the response
             required_keys = ["question", "options", "correct_answer", "explanation"]
             if not all(key in quiz_data for key in required_keys):
                 raise ValueError(f"Generated JSON missing required keys. Got: {list(quiz_data.keys())}")
@@ -83,12 +79,10 @@ Requirements:
             if not isinstance(quiz_data["options"], list) or len(quiz_data["options"]) != 4:
                 raise ValueError("Options must be a list of exactly 4 strings.")
             
-            # Find correct answer index
             correct_answer = quiz_data["correct_answer"]
             try:
                 correct_index = quiz_data["options"].index(correct_answer)
             except ValueError:
-                # If exact match fails, find the closest match
                 correct_index = 0
                 for i, option in enumerate(quiz_data["options"]):
                     if correct_answer.lower() in option.lower() or option.lower() in correct_answer.lower():
@@ -103,25 +97,24 @@ Requirements:
             }
 
         except Exception as e:
-            print(f"❌ Error generating question: {e}")
+            print(f"Error generating question: {e}")
             return None
 
     def generate_full_quiz(self, topic: str, difficulty: str, num_questions: int) -> List[Dict[str, Any]]:
         """Generate a complete quiz with multiple questions."""
         questions = []
         
-        print(f"🤖 Generating {num_questions} questions about {topic} ({difficulty} difficulty)...")
+        print(f"Generating {num_questions} questions about {topic} ({difficulty} difficulty)...")
         
         for i in range(num_questions):
-            print(f"📝 Generating question {i + 1}/{num_questions}...")
+            print(f"Generating question {i + 1}/{num_questions}...")
             
             question_data = self.generate_quiz_question(topic, difficulty)
             if question_data:
                 question_data["id"] = i + 1
                 questions.append(question_data)
-                print(f"✅ Question {i + 1} generated successfully")
+                print(f"Question {i + 1} generated successfully")
             else:
-                # Add a fallback question if generation fails
                 fallback_question = {
                     "id": i + 1,
                     "question": f"This is a sample question about {topic}. What is the most important concept to understand?",
@@ -135,12 +128,11 @@ Requirements:
                     "explanation": "Understanding fundamentals is always the key to learning any subject effectively."
                 }
                 questions.append(fallback_question)
-                print(f"⚠️ Question {i + 1} used fallback due to generation error")
+                print(f"Question {i + 1} used fallback due to generation error")
         
-        print(f"🎉 Quiz generation complete! Generated {len(questions)} questions")
+        print(f"Quiz generation complete! Generated {len(questions)} questions")
         return questions
 
-# Initialize the quiz generator
 quiz_gen = GroqQuizGenerator()
 
 @app.route('/health', methods=['GET'])
@@ -167,7 +159,6 @@ def generate_quiz():
         if not quiz_gen.client:
             return jsonify({"error": "Groq client not initialized"}), 500
         
-        # Generate questions
         questions = quiz_gen.generate_full_quiz(topic, difficulty, question_count)
         
         quiz_data = {
@@ -205,7 +196,6 @@ def validate_answer():
 if __name__ == '__main__':
     import os
     
-    # Get port from environment or use default
     port = int(os.environ.get('PORT', 5000))
     
     if not quiz_gen.client:
@@ -217,7 +207,6 @@ if __name__ == '__main__':
     print(f"Using model: {quiz_gen.model_name}")
     print(f"Server will run on port: {port}")
     
-    # Run in debug mode for development
     app.run(
         debug=True, 
         host='0.0.0.0', 
