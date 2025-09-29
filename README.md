@@ -40,19 +40,18 @@ An AI-powered quiz generator that creates questions and answers automatically.
 
 ## Getting Started (Local Development)
 
-### 1. Clone the repository
+
 ```bash
+### 1. Clone the repository
 git clone https://github.com/sharvanich/QuizNova
 cd QuizNova
 
 ### 2. run backend
-```bash
 cd backend
 pip install -r requirements.txt
 python backend.py
 
 ### 3. run frontend 
-```bash
 cd frontend
 npm install
 npm run dev
