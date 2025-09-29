@@ -1,9 +1,9 @@
-# 🤖 Groq AI Setup Guide
+# Groq AI Setup Guide
 
 ## Overview
 This guide will help you set up Groq AI for your quiz generator. Groq provides fast, reliable AI inference with a generous free tier.
 
-## 🔑 Groq API Key Setup
+## Groq API Key Setup
 
 **Cost**: Free tier available | **Quality**: Very Good | **Speed**: Extremely Fast
 
@@ -13,7 +13,7 @@ This guide will help you set up Groq AI for your quiz generator. Groq provides f
 4. Create new API key
 5. **Free tier**: 14,400 requests/day (plenty for development and production)
 
-## 🔧 Local Development Setup
+## Local Development Setup
 
 ### Step 1: Copy environment file
 ```bash
@@ -37,14 +37,14 @@ python setup_groq.py
 
 
 
-## 💰 Cost Estimation
+## Cost Estimation
 
 ### Groq Pricing
 - **Free Tier**: 14,400 requests/day (plenty for development and small production)
 - **Production**: Very cost-effective compared to other providers
 - **Speed**: Extremely fast inference (faster than OpenAI/Claude)
 
-## 🔒 Security Best Practices
+## Security Best Practices
 
 ### API Key Management
 1. **Never commit API keys** to code
@@ -58,7 +58,7 @@ python setup_groq.py
 - Built-in retry logic handles temporary failures
 - Fallback to mock data if needed
 
-## 🧪 Testing Your Setup
+## Testing Your Setup
 
 ### Test Groq Setup
 ```bash
@@ -73,14 +73,14 @@ curl -X POST http://localhost:5000/generate-quiz \
   -d '{"topic":"JavaScript","difficulty":"medium","questionCount":3}'
 ```
 
-## 🎯 Groq Setup
+## Groq Setup
 
 Simply add your Groq API key to the `.env` file:
 ```bash
 GROQ_API_KEY=gsk_your-key-here
 ```
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -96,7 +96,7 @@ GROQ_API_KEY=gsk_your-key-here
    - Update model name in backend.py if needed
    - Check console.groq.com for current models
 
-## 🎉 Ready to Go!
+## Ready to Go!
 
 Once you have your Groq API key set up:
 1. Your AI quiz generator will work reliably
@@ -104,4 +104,4 @@ Once you have your Groq API key set up:
 3. Cost-effective with generous free tier
 4. Professional-quality question generation
 
-Start generating amazing quizzes with Groq AI! 🚀
+Start generating amazing quizzes with Groq AI!
