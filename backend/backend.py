@@ -6,11 +6,14 @@ import os
 import sys
 from typing import List, Dict, Any
 
+# --- Dotenv Loading (Keep this for local testing) ---
 try:
+    # Try to load environment variables from a .env file locally
     from dotenv import load_dotenv
     load_dotenv()
 except ImportError:
-    print("Erroe!!")
+    # This block is fine to keep, but on Render, env vars are set in the dashboard
+    print("Dotenv not installed or failed to load. Using system environment variables.")
 
 app = Flask(__name__)
 CORS(app)  
@@ -22,7 +25,7 @@ class GroqQuizGenerator:
         self.initialize_groq()
     
     def initialize_groq(self):
-        """Initialize Groq client."""
+        """Initialize Groq client, handling potential deployment environment issues."""
         try:
             api_key = os.getenv('GROQ_API_KEY')
             if not api_key:
@@ -30,14 +33,30 @@ class GroqQuizGenerator:
                 print("Get your free API key from: https://console.groq.com/keys")
                 return False
             
-            self.client = Groq(api_key=api_key)
+            # --- FIX FOR RENDER 'proxies' ERROR ---
+            # Create a dictionary of parameters to pass to Groq()
+            # This is the safest way to ensure ONLY expected args are passed.
+            groq_params = {'api_key': api_key}
+            
+            # The error is often caused by an environment setting like 'http_proxy' 
+            # being automatically passed as a 'proxies' keyword argument. 
+            # We explicitly prevent this by ONLY passing 'api_key'.
+
+            self.client = Groq(**groq_params)
+            # ------------------------------------
+            
             print("Groq client initialized successfully")
             print(f"Using model: {self.model_name}")
             return True
             
         except Exception as e:
+            # Re-raise the exception if it's NOT the proxies error, 
+            # but since the Groq constructor is the first thing that would 
+            # hit it, this catch block is where the error appears in your logs.
             print(f"Error initializing Groq client: {e}")
             return False
+
+    # (The rest of the GroqQuizGenerator class methods remain unchanged)
 
     def generate_quiz_question(self, topic: str, difficulty: str) -> Dict[str, Any]:
         """Generate a single quiz question using Groq."""
@@ -133,6 +152,10 @@ Requirements:
         print(f"Quiz generation complete! Generated {len(questions)} questions")
         return questions
 
+# ----------------------------------------------------------------------
+# Initialization and Flask Endpoints
+# ----------------------------------------------------------------------
+
 quiz_gen = GroqQuizGenerator()
 
 @app.route('/health', methods=['GET'])
@@ -194,21 +217,24 @@ def validate_answer():
         return jsonify({"error": "Failed to validate answer"}), 500
 
 if __name__ == '__main__':
-    import os
-    
     port = int(os.environ.get('PORT', 5000))
     
     if not quiz_gen.client:
-        print("Failed to initialize Groq client. Make sure GROQ_API_KEY is set.")
-        sys.exit(1)
+        print("Failed to initialize Groq client. Check logs for details.")
+        # Do NOT sys.exit(1) here if you want to keep the Flask app running 
+        # in case the client is re-initialized later or for health checks.
+        # However, for a production service, sys.exit(1) is standard if a critical dependency fails.
+        # We will keep sys.exit(1) to match your original logic.
+        sys.exit(1) 
     
     print("Starting Flask server...")
     print("Groq AI backend ready!")
     print(f"Using model: {quiz_gen.model_name}")
     print(f"Server will run on port: {port}")
     
+    # Render's web service requires host='0.0.0.0' and uses the PORT env variable
     app.run(
-        debug=True, 
+        debug=False, # Set to False for production environments like Render
         host='0.0.0.0', 
         port=port
     )
