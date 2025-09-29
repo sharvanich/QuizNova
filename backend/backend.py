@@ -33,15 +33,8 @@ class GroqQuizGenerator:
                 print("Get your free API key from: https://console.groq.com/keys")
                 return False
             
-            # --- FIX FOR RENDER 'proxies' ERROR ---
-            # Create a dictionary of parameters to pass to Groq()
-            # This is the safest way to ensure ONLY expected args are passed.
+            # --- FIXED: Preventing 'proxies' error by explicit parameter passing ---
             groq_params = {'api_key': api_key}
-            
-            # The error is often caused by an environment setting like 'http_proxy' 
-            # being automatically passed as a 'proxies' keyword argument. 
-            # We explicitly prevent this by ONLY passing 'api_key'.
-
             self.client = Groq(**groq_params)
             # ------------------------------------
             
@@ -50,13 +43,8 @@ class GroqQuizGenerator:
             return True
             
         except Exception as e:
-            # Re-raise the exception if it's NOT the proxies error, 
-            # but since the Groq constructor is the first thing that would 
-            # hit it, this catch block is where the error appears in your logs.
             print(f"Error initializing Groq client: {e}")
             return False
-
-    # (The rest of the GroqQuizGenerator class methods remain unchanged)
 
     def generate_quiz_question(self, topic: str, difficulty: str) -> Dict[str, Any]:
         """Generate a single quiz question using Groq."""
@@ -158,6 +146,21 @@ Requirements:
 
 quiz_gen = GroqQuizGenerator()
 
+# --- FIX for 404 Error: Add root path route ---
+@app.route('/', methods=['GET'])
+def home():
+    """Simple root endpoint to confirm the service is running."""
+    return jsonify({
+        "message": "Welcome to the QuizNova Backend API!",
+        "status": "Online and functional",
+        "health_check": "/health",
+        "api_endpoints": {
+            "generate_quiz": "/generate-quiz (POST)",
+            "validate_answer": "/validate-answer (POST)"
+        }
+    })
+# ---------------------------------------------
+
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint."""
@@ -221,10 +224,6 @@ if __name__ == '__main__':
     
     if not quiz_gen.client:
         print("Failed to initialize Groq client. Check logs for details.")
-        # Do NOT sys.exit(1) here if you want to keep the Flask app running 
-        # in case the client is re-initialized later or for health checks.
-        # However, for a production service, sys.exit(1) is standard if a critical dependency fails.
-        # We will keep sys.exit(1) to match your original logic.
         sys.exit(1) 
     
     print("Starting Flask server...")
